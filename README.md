@@ -116,6 +116,16 @@ build diario de Protomaps (por ejemplo `20261120`).
 - En el auto, Android Auto bloquea el teclado mientras se maneja.
 - Siempre manda la señalización de la calle.
 
+## Antes de un PR o un Release: probar en el celular
+
+Es **obligatorio** probar cada cambio en un celular real antes de abrir un PR, publicar un Release o subir a `main`:
+
+```
+bash tools/verificar.sh
+```
+
+El script corre las pruebas, compila, **exige un celular conectado por USB**, instala la app, la abre, abre cada menú y busca errores graves. Deja capturas en `verificacion/` para revisarlas. Solo se sigue si termina en `VERIFICACIÓN OK`.
+
 ## Documentación
 
 - [docs/ARQUITECTURA.md](docs/ARQUITECTURA.md): cómo está hecha la app, formatos de datos, algoritmos.

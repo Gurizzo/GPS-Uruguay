@@ -3,6 +3,17 @@
 Navegador GPS sin conexión para Uruguay ("Radar UY"), app Android + Android Auto para un Honda Civic 2017.
 El usuario escribe en español rioplatense; responder y documentar en español.
 
+## Regla: probar en el celular (OBLIGATORIA)
+
+Antes de **abrir un PR, publicar un Release, subir cambios a `main` o agregar/cambiar una regla del proyecto**:
+
+1. Pedirle al usuario que **conecte su celular por USB** (Depuración USB e "Instalar vía USB" en Xiaomi). Sin celular conectado no se sigue.
+2. Correr `bash tools/verificar.sh` (pruebas unitarias + compilación + instalar en el celular + abrir la app y cada menú + revisar errores graves). Tiene que terminar en `VERIFICACIÓN OK`.
+3. Revisar las capturas de `verificacion/` (mirarlas, no solo confiar en el código de salida) y probar a mano lo que cambió.
+4. Recién ahí commit/PR/Release, y contar en la descripción qué se probó y en qué celular.
+
+Si algo falla, se arregla y se vuelve a verificar; no se sube "para probar después".
+
 Leer primero: `README.md`, `docs/ARQUITECTURA.md` (clases, formatos binarios) y `docs/CONTEXTO.md` (decisiones y pendientes).
 
 ## Comandos
