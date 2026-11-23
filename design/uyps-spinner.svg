@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+
+    <linearGradient id="spinnerBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ff007f" />
+      <stop offset="55%" stop-color="#6b21a8" />
+      <stop offset="100%" stop-color="#00f2fe" />
+    </linearGradient>
+
+
+    <linearGradient id="needlePink" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ff007f" />
+      <stop offset="100%" stop-color="#ff7eb3" />
+    </linearGradient>
+
+
+    <linearGradient id="needleCyan" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="100%" stop-color="#00f2fe" />
+    </linearGradient>
+
+
+    <filter id="neonGlow" x="-25%" y="-25%" width="150%" height="150%">
+      <feGaussianBlur stdDeviation="5" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+
+
+  <circle cx="256" cy="256" r="236" fill="url(#spinnerBg)" />
+
+
+  <g>
+    <animateTransform attributeName="transform" type="rotate" from="0 256 256" to="360 256 256" dur="4s" repeatCount="indefinite" />
+
+
+    <circle cx="256" cy="256" r="185" fill="none" stroke="#ffffff" stroke-width="6" stroke-linecap="round" stroke-dasharray="1 24" opacity="0.9" />
+
+
+    <g transform="translate(387, 125) rotate(45)" filter="url(#neonGlow)">
+      <path d="M 0 -22 C -12 -22 -22 -12 -22 0 C -22 15 0 34 0 34 C 0 34 22 15 22 0 C 22 -12 12 -22 0 -22 Z" fill="#00f2fe" stroke="#ffffff" stroke-width="2" />
+      <circle cx="0" cy="-2" r="8" fill="#140529" />
+    </g>
+  </g>
+
+
+  <path d="M 256 155 C 205 155 165 195 165 245 C 165 305 256 385 256 385 C 256 385 347 305 347 245 C 347 195 307 155 256 155 Z" fill="none" stroke="#ffffff" stroke-width="8" stroke-linejoin="round" opacity="0.85" />
+
+
+  <g transform="translate(256, 250) rotate(42)" filter="url(#neonGlow)">
+
+    <polygon points="0,-115 26,0 -26,0" fill="url(#needleCyan)" stroke="#ffffff" stroke-width="3" stroke-linejoin="round" />
+
+    <polygon points="0,115 26,0 -26,0" fill="url(#needlePink)" stroke="#ffffff" stroke-width="3" stroke-linejoin="round" />
+
+    <circle cx="0" cy="0" r="10" fill="#ffffff" />
+  </g>
+
+
+  <text x="256" y="445" text-anchor="middle" font-family="'Arial Black', Impact, sans-serif" font-weight="900" font-style="italic" font-size="34" letter-spacing="2" fill="#ff007f" stroke="#00f2fe" stroke-width="1.5">
+    UYPS
+  </text>
+</svg>

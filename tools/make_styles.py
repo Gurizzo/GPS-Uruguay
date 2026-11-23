@@ -22,7 +22,7 @@ json.dump(st, open(os.path.join(A, "style.json"), "w", encoding="utf-8"), ensure
 
 # Vista 3D: igual a la noche pero con edificios en relieve
 s3 = json.loads(json.dumps(st))
-s3["name"] = "Radar UY Noche 3D"
+s3["name"] = "UYPS Noche 3D"
 s3["light"] = {"anchor": "viewport", "color": "#ffffff", "intensity": 0.32, "position": [1.3, 200, 35]}
 out = []
 for l in s3["layers"]:

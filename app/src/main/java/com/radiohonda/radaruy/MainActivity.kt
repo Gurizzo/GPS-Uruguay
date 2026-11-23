@@ -36,6 +36,8 @@ class MainActivity : Activity() {
     private lateinit var viewBtn: ImageView
     private lateinit var soundBtn: ImageView
     private var controller: MapController? = null
+    private lateinit var calcCard: View
+    private val showCalc = Runnable { calcCard.visibility = View.VISIBLE }
 
     private val hudListener = Drive.Listener { hud.setState(it) }
     private val navListener = Navigator.Listener { n ->
@@ -43,6 +45,10 @@ class MainActivity : Activity() {
         searchBar.visibility = if (n.active) View.GONE else View.VISIBLE
         stopBtn.visibility = if (n.active) View.VISIBLE else View.GONE
         n.error?.let { Toast.makeText(this, it, Toast.LENGTH_LONG).show() }
+        // Spinner solo si el cálculo tarda (la primera vez carga la red vial)
+        calcCard.removeCallbacks(showCalc)
+        if (n.calculating && n.route == null) calcCard.postDelayed(showCalc, 250)
+        else calcCard.visibility = View.GONE
         // Pantalla siempre encendida mientras se navega con el teléfono
         if (n.active) window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         else window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
@@ -99,12 +105,43 @@ class MainActivity : Activity() {
             FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT, Gravity.END or Gravity.BOTTOM
         ).apply { setMargins(0, 0, dp(14f), dp(24f)) })
 
-        val loading = TextView(this).apply {
-            text = "Preparando el mapa de Uruguay…"
-            setTextColor(Color.WHITE)
-            textSize = 16f
+        // Cartel "Calculando ruta…" con el spinner (aparece si tarda más de un instante)
+        calcCard = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            gravity = Gravity.CENTER_HORIZONTAL
+            setPadding(dp(24f), dp(20f), dp(24f), dp(18f))
+            background = Ui.rounded(0xF2131A2E.toInt(), dp(28f).toFloat(), Ui.STROKE, dp(1.2f))
+            elevation = dp(20f).toFloat()
+            addView(SpinnerView(context), LinearLayout.LayoutParams(dp(120f), dp(120f)))
+            addView(TextView(context).apply {
+                text = "Calculando ruta…"; textSize = 16f; setTextColor(Color.WHITE)
+                gravity = Gravity.CENTER
+                setPadding(0, dp(12f), 0, 0)
+            })
+            visibility = View.GONE
+        }
+        root.addView(calcCard, FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT, Gravity.CENTER))
+
+        // Pantalla de carga con el spinner de UYPS
+        val loading = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
             gravity = Gravity.CENTER
-            setBackgroundColor(Ui.BG)
+            setBackgroundColor(0xFF0C031C.toInt())
+            isClickable = true
+            elevation = dp(30f).toFloat() // por encima de la barra de búsqueda y los botones
+            addView(SpinnerView(context), LinearLayout.LayoutParams(dp(190f), dp(190f)))
+            addView(TextView(context).apply {
+                text = "Uruguay Positioning System"
+                gravity = Gravity.CENTER
+                textSize = 13f; letterSpacing = 0.12f; setTextColor(Ui.ACCENT)
+                typeface = android.graphics.Typeface.create(android.graphics.Typeface.DEFAULT_BOLD, android.graphics.Typeface.BOLD_ITALIC)
+                setPadding(0, dp(22f), 0, dp(6f))
+            })
+            addView(TextView(context).apply {
+                text = "Preparando el mapa de Uruguay…"; textSize = 15f; setTextColor(Ui.TEXT_DIM)
+                gravity = Gravity.CENTER
+            })
         }
         root.addView(loading)
 
@@ -137,6 +174,7 @@ class MainActivity : Activity() {
                 "negocios" -> root.post { showCategories() }
                 "cerca" -> root.post { showNearbyMenu() }
                 "buscar" -> root.post { showSearch() }
+                "casa" -> root.post { showFavoriteSetup(Prefs.Favorite.HOME) }
             }
         }
     }
@@ -188,6 +226,54 @@ class MainActivity : Activity() {
             sheet.dismiss()
             startTrip(SearchIndex.Place(name, cat?.label ?: "", lat, lon))
         }.apply { textSize = 17f; setPadding(0, dp(14f), 0, dp(14f)) })
+        if (!radar) {
+            val line = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL; setPadding(0, dp(10f), 0, 0) }
+            for ((i, fav) in Prefs.Favorite.entries.withIndex()) {
+                line.addView(Ui.pill(this, "Guardar como ${fav.label.lowercase()}", primary = false) {
+                    sheet.dismiss()
+                    saveFavorite(fav, SearchIndex.Place(name, cat?.label ?: "", lat, lon))
+                }.apply { textSize = 14f }, LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f)
+                    .apply { if (i == 0) rightMargin = dp(10f) })
+            }
+            sheet.content.addView(line)
+        }
+        sheet.show(null)
+    }
+
+    // ------------------------------------------------------- casa y trabajo ---
+    private fun saveFavorite(fav: Prefs.Favorite, p: SearchIndex.Place) {
+        Prefs.setFavorite(this, fav, p)
+        Toast.makeText(this, "${fav.label} guardada: ${p.name}", Toast.LENGTH_SHORT).show()
+    }
+
+    private fun favIcon(fav: Prefs.Favorite) =
+        Icons.ui(if (fav == Prefs.Favorite.HOME) Icons.Ui.HOME else Icons.Ui.WORK, dp(40f), Ui.ACCENT)
+
+    /** Configurar Casa o Trabajo: ubicación actual, buscar, o borrar. */
+    private fun showFavoriteSetup(fav: Prefs.Favorite) {
+        val current = Prefs.favorite(this, fav)
+        val sheet = Ui.Sheet(this, if (current == null) "Marcar ${fav.label.lowercase()}" else fav.label)
+        if (current != null) sheet.content.addView(Ui.row(this, favIcon(fav), current.name, "Guardada"))
+        sheet.content.addView(Ui.row(this, Icons.ui(Icons.Ui.RECENTER, dp(40f), Ui.ACCENT), "Usar mi ubicación actual",
+            if (Drive.state.hasFix) "Donde estás ahora" else "Esperando señal GPS…", onClick = {
+                val d = Drive.state
+                if (!d.hasFix) {
+                    Toast.makeText(this, "Todavía no hay señal GPS", Toast.LENGTH_SHORT).show()
+                } else {
+                    sheet.dismiss()
+                    saveFavorite(fav, SearchIndex.Place("Mi ${fav.label.lowercase()}", fav.label, d.lat, d.lon))
+                }
+            }))
+        sheet.content.addView(Ui.row(this, Icons.ui(Icons.Ui.SEARCH, dp(40f), Ui.ACCENT), "Buscar dirección o lugar",
+            "Calle, barrio o negocio", onClick = { sheet.dismiss(); showSearch(pickFor = fav) }))
+        sheet.content.addView(Ui.row(this, Icons.destination(dp(40f)), "Elegir en el mapa",
+            "Mantené apretado un punto o tocá un negocio y elegí \"Guardar como ${fav.label.lowercase()}\"",
+            onClick = { sheet.dismiss() }))
+        if (current != null) {
+            sheet.content.addView(Ui.pill(this, "Borrar ${fav.label.lowercase()}", primary = false) {
+                sheet.dismiss(); Prefs.setFavorite(this, fav, null)
+            })
+        }
         sheet.show(null)
     }
 
@@ -199,23 +285,48 @@ class MainActivity : Activity() {
     }
 
     // ------------------------------------------------------------- búsqueda ---
-    private fun showSearch() {
-        val sheet = Ui.Sheet(this, "¿A dónde vamos?")
+    /** Buscador. Con [pickFor] el resultado elegido se guarda como Casa/Trabajo en vez de navegar. */
+    private fun showSearch(pickFor: Prefs.Favorite? = null) {
+        val sheet = Ui.Sheet(this, if (pickFor == null) "¿A dónde vamos?" else "Buscar ${pickFor.label.lowercase()}")
         val input = Ui.searchField(this, "Ciudad, barrio, calle o negocio")
         sheet.root.addView(input, 2, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
             ViewGroup.LayoutParams.WRAP_CONTENT).apply { bottomMargin = dp(12f) })
 
+        val choose: (SearchIndex.Place) -> Unit = { p ->
+            sheet.dismiss()
+            if (pickFor != null) saveFavorite(pickFor, p) else startTrip(p)
+        }
+
         fun render(q: String, results: List<SearchIndex.Place>) {
             sheet.content.removeAllViews()
+            if (q.isBlank() && pickFor == null) {
+                // Accesos rápidos a Casa y Trabajo
+                val line = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL }
+                for ((i, fav) in Prefs.Favorite.entries.withIndex()) {
+                    val place = Prefs.favorite(this, fav)
+                    val chip = Ui.chip(this, favIcon(fav), fav.label + "\n" + (place?.let { distanceText(it.lat, it.lon) ?: it.name } ?: "Configurar")) {
+                        sheet.dismiss()
+                        if (place != null) startTrip(place) else showFavoriteSetup(fav)
+                    }
+                    chip.setOnLongClickListener { sheet.dismiss(); showFavoriteSetup(fav); true }
+                    line.addView(chip, LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f)
+                        .apply { if (i == 0) rightMargin = dp(8f); bottomMargin = dp(10f) })
+                }
+                sheet.content.addView(line)
+                if (Prefs.Favorite.entries.any { Prefs.favorite(this, it) != null }) {
+                    sheet.content.addView(Ui.header(this, "MANTENÉ APRETADO CASA O TRABAJO PARA CAMBIARLOS"))
+                }
+            }
             if (q.isBlank() && results.isNotEmpty()) sheet.content.addView(Ui.header(this, "RECIENTES"))
             if (q.isNotBlank() && results.isEmpty()) sheet.content.addView(Ui.header(this, "SIN RESULTADOS"))
             for (p in results) {
                 val sub = listOfNotNull(p.subtitle.ifEmpty { null }, distanceText(p.lat, p.lon)).joinToString(" · ")
-                val go = { sheet.dismiss(); startTrip(p) }
-                sheet.content.addView(Ui.row(this, Icons.destination(dp(36f)), p.name, sub, "Ir", onAction = go, onClick = go))
+                val go = { choose(p) }
+                sheet.content.addView(Ui.row(this, Icons.destination(dp(36f)), p.name, sub,
+                    if (pickFor == null) "Ir" else "Elegir", onAction = go, onClick = go))
             }
         }
-        render("", Prefs.recents(this))
+        render("", if (pickFor == null) Prefs.recents(this) else emptyList())
         input.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, a: Int, b: Int, c: Int) {}
             override fun onTextChanged(s: CharSequence?, a: Int, b: Int, c: Int) {}
@@ -223,7 +334,8 @@ class MainActivity : Activity() {
                 val q = e.toString()
                 val d = Drive.state
                 thread {
-                    val r = if (q.isBlank()) Prefs.recents(this@MainActivity) else SearchIndex.search(q, d.lat, d.lon)
+                    val r = if (q.isBlank()) (if (pickFor == null) Prefs.recents(this@MainActivity) else emptyList())
+                        else SearchIndex.search(q, d.lat, d.lon)
                     runOnUiThread { if (input.text.toString() == q) render(q, r) }
                 }
             }

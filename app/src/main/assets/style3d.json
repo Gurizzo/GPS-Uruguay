@@ -1,6 +1,6 @@
 {
  "version": 8,
- "name": "Radar UY Noche 3D",
+ "name": "UYPS Noche 3D",
  "glyphs": "asset://fonts/{fontstack}/{range}.pbf",
  "sources": {
   "base": {

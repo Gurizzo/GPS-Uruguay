@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-Navegador GPS sin conexión para Uruguay ("Radar UY"), app Android + Android Auto para un Honda Civic 2017.
+Navegador GPS sin conexión para Uruguay ("UYPS — Uruguay Positioning System"; antes "Radar UY"), app Android + Android Auto para un Honda Civic 2017.
 El usuario escribe en español rioplatense; responder y documentar en español.
 
 ## Regla: probar en el celular (OBLIGATORIA)

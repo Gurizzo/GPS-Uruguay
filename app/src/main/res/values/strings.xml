@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Radar UY</string>
+    <string name="app_name">UYPS</string>
+    <string name="app_full_name">Uruguay Positioning System</string>
 </resources>

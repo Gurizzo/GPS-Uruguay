@@ -73,7 +73,7 @@ a exec-out screencap -p > "$OUT/01-mapa.png" && ok "captura $OUT/01-mapa.png"
 
 paso "6/6 Menús"
 i=2
-for menu in negocios cerca buscar; do
+for menu in negocios cerca buscar casa; do
   a shell am force-stop $PKG
   a shell am start -n $PKG/.MainActivity --es abrir $menu >/dev/null
   espera 7

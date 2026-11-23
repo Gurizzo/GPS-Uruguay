@@ -10,7 +10,10 @@ import androidx.car.app.model.ItemList
 import androidx.car.app.model.Row
 import androidx.car.app.model.SearchTemplate
 import androidx.car.app.model.Template
+import androidx.car.app.model.CarIcon
+import androidx.core.graphics.drawable.IconCompat
 import com.radiohonda.radaruy.Drive
+import com.radiohonda.radaruy.Icons
 import com.radiohonda.radaruy.Prefs
 import com.radiohonda.radaruy.routing.Navigator
 import com.radiohonda.radaruy.routing.SearchIndex
@@ -35,13 +38,27 @@ class SearchScreen(carContext: CarContext) : Screen(carContext) {
             6
         }
         val list = ItemList.Builder()
-        for (p in results.take(limit)) {
+        var used = 0
+        if (query.isBlank()) {
+            for (fav in Prefs.Favorite.entries) {
+                val p = Prefs.favorite(carContext, fav) ?: continue
+                list.addItem(Row.Builder()
+                    .setTitle(fav.label)
+                    .addText(p.name)
+                    .setImage(CarIcon.Builder(IconCompat.createWithBitmap(
+                        Icons.ui(if (fav == Prefs.Favorite.HOME) Icons.Ui.HOME else Icons.Ui.WORK, 96, 0xFF2FE6E9.toInt()))).build())
+                    .setOnClickListener { go(p) }
+                    .build())
+                used++
+            }
+        }
+        for (p in results.take((limit - used).coerceAtLeast(0))) {
             val row = Row.Builder().setTitle(p.name)
             if (p.subtitle.isNotEmpty()) row.addText(p.subtitle)
             row.setOnClickListener { go(p) }
             list.addItem(row.build())
         }
-        if (results.isEmpty()) {
+        if (results.isEmpty() && used == 0) {
             list.setNoItemsMessage(if (query.isBlank()) "Escribí una ciudad, calle o negocio" else "Sin resultados")
         }
         val b = SearchTemplate.Builder(object : SearchTemplate.SearchCallback {

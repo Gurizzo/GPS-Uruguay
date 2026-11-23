@@ -289,7 +289,7 @@ object Icons {
     }
 
     /** Íconos de los botones de la interfaz (blancos sobre transparente). */
-    enum class Ui { SEARCH, NEARBY, LAYERS, SOUND_ON, SOUND_OFF, VIEW_3D, VIEW_2D, RECENTER, CLOSE, CHECK, BACK }
+    enum class Ui { SEARCH, NEARBY, LAYERS, SOUND_ON, SOUND_OFF, VIEW_3D, VIEW_2D, RECENTER, CLOSE, CHECK, BACK, HOME, WORK, EDIT }
 
     fun ui(icon: Ui, sizePx: Int, color: Int = Color.WHITE): Bitmap {
         val (bmp, c) = canvasFor(sizePx)
@@ -346,6 +346,24 @@ object Icons {
             Ui.CLOSE -> {
                 c.drawLine(-7f, -7f, 7f, 7f, stroke(color, 3.2f))
                 c.drawLine(7f, -7f, -7f, 7f, stroke(color, 3.2f))
+            }
+            Ui.HOME -> {
+                c.drawPath(Path().apply { moveTo(-11f, -1f); lineTo(0f, -11f); lineTo(11f, -1f) }, stroke(color, 3f))
+                c.drawPath(Path().apply {
+                    moveTo(-7.5f, -3f); lineTo(-7.5f, 10f); lineTo(-2.5f, 10f); lineTo(-2.5f, 3f)
+                    lineTo(2.5f, 3f); lineTo(2.5f, 10f); lineTo(7.5f, 10f); lineTo(7.5f, -3f); lineTo(0f, -9.5f); close()
+                }, f)
+            }
+            Ui.WORK -> {
+                c.drawRoundRect(RectF(-11f, -5f, 11f, 10f), 2.5f, 2.5f, f)
+                c.drawRoundRect(RectF(-4.5f, -10f, 4.5f, -3f), 2f, 2f, s)
+                c.drawRect(-11f, 1f, 11f, 2.6f, fill(0xFF1B2442.toInt()))
+            }
+            Ui.EDIT -> {
+                c.save(); c.rotate(45f)
+                c.drawRoundRect(RectF(-2.8f, -11f, 2.8f, 6f), 1f, 1f, f)
+                c.drawPath(Path().apply { moveTo(-2.8f, 8f); lineTo(2.8f, 8f); lineTo(0f, 12f); close() }, f)
+                c.restore()
             }
             Ui.CHECK -> c.drawPath(Path().apply { moveTo(-8f, 0f); lineTo(-2f, 6f); lineTo(9f, -6f) }, stroke(color, 3.4f))
             Ui.BACK -> c.drawPath(Path().apply { moveTo(4f, -9f); lineTo(-5f, 0f); lineTo(4f, 9f) }, stroke(color, 3.2f))

@@ -1,4 +1,6 @@
-# GPS Uruguay — Radar UY
+<p align="center"><img src="design/uyps-logo.png" width="180" alt="UYPS"></p>
+
+# UYPS — Uruguay Positioning System
 
 Navegador GPS **sin conexión** para Uruguay, pensado para usarse en la pantalla de un
 **Honda Civic 2017** (Display Audio de 7") a través de **Android Auto**, y también
@@ -17,6 +19,7 @@ pantalla del auto, igual que Waze o Google Maps (con Spotify al costado en la pa
 | **Radares** | 234 radares (fijos, de tramo y de semáforo) con aviso visual y sonoro. |
 | **Velocidad y límite** | Velocímetro tipo Waze + cartel con el límite de la calle actual; se pone rojo si te pasás. |
 | **Buscador** | 35.000 ciudades, barrios, calles y negocios; destinos recientes. |
+| **Casa y Trabajo** | Accesos rápidos en el buscador (teléfono y auto). Se marcan con la ubicación actual, buscando, o desde el mapa ("Guardar como casa/trabajo"). Mantener apretado para cambiarlos. |
 | **"Cerca mío"** | Farmacias, monumentos, discotecas, bancos, estaciones de servicio, hospitales, comisarías, shoppings, restaurantes… ordenados por cercanía al abrir el menú, con botón **Ir**. |
 | **Negocios en el mapa** | 17 tipos con íconos propios; se elige cuáles mostrar. Tocar uno muestra una tarjeta con **Ir**. |
 | **Android Auto** | Tarjeta de indicaciones nativa, búsqueda, "Cerca", filtros, zoom, mover el mapa, cambiar 2D/3D. |
@@ -58,7 +61,7 @@ Luego:
    adb install -r app/build/outputs/apk/debug/app-debug.apk
    ```
    (o copiar el APK al teléfono e instalarlo desde el administrador de archivos).
-3. Abrir **Radar UY** y aceptar el permiso de ubicación. La primera vez copia los mapas al almacenamiento interno (unos segundos).
+3. Abrir **UYPS** y aceptar el permiso de ubicación. La primera vez copia los mapas al almacenamiento interno (unos segundos).
 
 ## Habilitarla en Android Auto
 
@@ -66,7 +69,7 @@ Como no viene de Play Store, Android Auto la oculta hasta habilitar fuentes desc
 
 1. Abrir la app **Android Auto** en el teléfono, ir al final y tocar **Versión** 10 veces.
 2. Menú ⋮ → **Configuración para desarrolladores** → activar **Fuentes desconocidas**.
-3. Conectar al auto: **Radar UY** aparece en el lanzador.
+3. Conectar al auto: **UYPS** aparece en el lanzador.
 
 Para probar sin el auto: en Android Auto, menú ⋮ → *Iniciar servidor de unidad principal*, y en la PC
 `adb forward tcp:5277 tcp:5277` + `desktop-head-unit.exe` (instalar *Android Auto Desktop Head Unit Emulator* desde el SDK Manager).
@@ -125,6 +128,10 @@ bash tools/verificar.sh
 ```
 
 El script corre las pruebas, compila, **exige un celular conectado por USB**, instala la app, la abre, abre cada menú y busca errores graves. Deja capturas en `verificacion/` para revisarlas. Solo se sigue si termina en `VERIFICACIÓN OK`.
+
+## Marca
+
+El logo y el spinner están en `design/` como SVG. Las imágenes que usa Android (ícono de la app y las dos capas del spinner) se generan con `python tools/render_brand.py` (usa Chrome o Edge para dibujar los SVG).
 
 ## Documentación
 

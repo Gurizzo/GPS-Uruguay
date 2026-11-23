@@ -33,6 +33,8 @@ compartiendo la pantalla con Spotify.
 6. Instalación en un Redmi Note 13 Pro 5G (Xiaomi requiere "Instalar vía USB").
 7. Vista 3D detrás de la flecha, tocar negocios para ir, menús nuevos.
 8. Íconos en baldosas, 3D con colores de noche, mapa a zoom 15 y edificios satelitales.
+9. Nueva marca: la app pasa a llamarse **UYPS — Uruguay Positioning System**, con logo y spinner propios (`design/`). El paquete sigue siendo `com.radiohonda.radaruy` para no perder datos ni instalaciones.
+10. Casa y Trabajo como destinos guardados; spinner de UYPS en la carga y al calcular rutas.
 
 ## Estado
 

@@ -46,6 +46,28 @@ object Prefs {
         notifyChanged()
     }
 
+    /** Lugares guardados: "home" (Casa) y "work" (Trabajo). */
+    enum class Favorite(val key: String, val label: String) { HOME("home", "Casa"), WORK("work", "Trabajo") }
+
+    fun favorite(c: Context, f: Favorite): SearchIndex.Place? {
+        val raw = prefs(c).getString("fav_${f.key}", null) ?: return null
+        return try {
+            val o = JSONObject(raw)
+            SearchIndex.Place(o.getString("n"), o.optString("s"), o.getDouble("lat"), o.getDouble("lon"))
+        } catch (e: Exception) {
+            null
+        }
+    }
+
+    fun setFavorite(c: Context, f: Favorite, p: SearchIndex.Place?) {
+        val e = prefs(c).edit()
+        if (p == null) e.remove("fav_${f.key}")
+        else e.putString("fav_${f.key}", JSONObject().put("n", p.name).put("s", p.subtitle)
+            .put("lat", p.lat).put("lon", p.lon).toString())
+        e.apply()
+        notifyChanged()
+    }
+
     /** Últimos destinos (el más reciente primero). */
     fun recents(c: Context): List<SearchIndex.Place> {
         val raw = prefs(c).getString(KEY_RECENTS, "[]") ?: "[]"

@@ -11,8 +11,8 @@ android {
         applicationId = "com.radiohonda.radaruy"
         minSdk = 26
         targetSdk = 35
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 2
+        versionName = "1.1.0"
         // Solo procesadores de celulares (sin x86 de emuladores): ahorra ~27 MB
         ndk { abiFilters += listOf("arm64-v8a", "armeabi-v7a") }
     }

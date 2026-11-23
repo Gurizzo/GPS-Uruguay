@@ -16,14 +16,14 @@ class DriveService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         val nm = getSystemService(NotificationManager::class.java)
         nm.createNotificationChannel(
-            NotificationChannel(CHANNEL, "Radar UY activo", NotificationManager.IMPORTANCE_LOW)
+            NotificationChannel(CHANNEL, "UYPS activo", NotificationManager.IMPORTANCE_LOW)
         )
         val open = PendingIntent.getActivity(
             this, 0, Intent(this, MainActivity::class.java), PendingIntent.FLAG_IMMUTABLE
         )
         val n = Notification.Builder(this, CHANNEL)
             .setSmallIcon(R.drawable.ic_recenter)
-            .setContentTitle("Radar UY")
+            .setContentTitle("UYPS")
             .setContentText("Avisando radares y límites de velocidad")
             .setContentIntent(open)
             .setOngoing(true)
