@@ -2,8 +2,7 @@
 
 # UYPS — Uruguay Positioning System
 
-Navegador GPS **sin conexión** para Uruguay, pensado para usarse en la pantalla de un
-**Honda Civic 2017** (Display Audio de 7") a través de **Android Auto**, y también
+Navegador GPS **sin conexión** para Uruguay, pensado para  (Display Audio de 7") a través de **Android Auto**, y también
 directamente en el teléfono.
 
 La app no se instala en la radio: corre en el teléfono y Android Auto la proyecta en la
