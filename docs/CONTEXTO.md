@@ -35,6 +35,7 @@ compartiendo la pantalla con Spotify.
 8. Íconos en baldosas, 3D con colores de noche, mapa a zoom 15 y edificios satelitales.
 9. Nueva marca: la app pasa a llamarse **UYPS — Uruguay Positioning System**, con logo y spinner propios (`design/`). El paquete sigue siendo `com.radiohonda.radaruy` para no perder datos ni instalaciones.
 10. Casa y Trabajo como destinos guardados; spinner de UYPS en la carga y al calcular rutas.
+11. Repo público (sin email personal en el historial). Demo pública: GIF en el README + APK en el Release, grabada con el modo demo para no mostrar la ubicación real del dueño del celular.
 
 ## Estado
 

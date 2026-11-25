@@ -158,6 +158,11 @@ object Ui {
      * Hoja inferior (bottom sheet) con título, botón de cerrar y contenido desplazable.
      * Devuelve el diálogo y el contenedor donde agregar filas.
      */
+    /** Hojas abiertas (para poder cerrarlas todas desde el modo demo). */
+    private val openSheets = mutableListOf<Sheet>()
+
+    fun closeAllSheets() = openSheets.toList().forEach { it.dismiss() }
+
     class Sheet(val activity: Activity, title: String, onBack: (() -> Unit)? = null, scroll: Boolean = true) {
         val dialog = Dialog(activity)
         val content: LinearLayout = LinearLayout(activity).apply { orientation = LinearLayout.VERTICAL }
@@ -217,6 +222,8 @@ object Ui {
             w.setLayout(WindowManager.LayoutParams.MATCH_PARENT, h)
             w.setDimAmount(0.45f)
             w.attributes.windowAnimations = android.R.style.Animation_InputMethod
+            openSheets.add(this)
+            dialog.setOnDismissListener { openSheets.remove(this) }
             dialog.show()
         }
 

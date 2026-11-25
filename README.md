@@ -9,6 +9,14 @@ directamente en el teléfono.
 La app no se instala en la radio: corre en el teléfono y Android Auto la proyecta en la
 pantalla del auto, igual que Waze o Google Maps (con Spotify al costado en la pantalla dividida).
 
+## Demo
+
+<p align="center"><img src="docs/demo.gif" width="280" alt="Demo de UYPS: navegación en vista noche y 3D, menú Cerca mío y negocios"></p>
+
+**[Descargar la última versión (APK) →](https://github.com/Gurizzo/GPS-Uruguay/releases/latest)**
+
+El GIF es un recorrido simulado por el Centro de Montevideo (de 18 de Julio al Palacio Legislativo) grabado en un celular real con el modo demo de la app: pantalla de carga, navegación giro a giro en la vista noche, vista 3D detrás de la flecha con aviso de radar, y los menús "Cerca mío" y "Negocios". Es una app de Android, así que no corre en el navegador: se instala el APK del Release (ver [Instalar en el teléfono](#instalar-en-el-teléfono)).
+
 ## Funciones
 
 | | |
@@ -118,6 +126,10 @@ build diario de Protomaps (por ejemplo `20261120`).
 - **Edificios satelitales:** sin altura real; se dibujan de 5 m.
 - En el auto, Android Auto bloquea el teclado mientras se maneja.
 - Siempre manda la señalización de la calle.
+
+## Grabar la demo
+
+`bash tools/grabar_demo.sh` graba `docs/demo.gif` desde el celular usando el **modo demo** (recorrido simulado que ignora el GPS real), abre la app antes de grabar para no capturar la pantalla de inicio, recorta la barra de estado y restaura las preferencias al terminar. **Antes de publicar, revisar los cuadros** para confirmar que no aparezca nada personal.
 
 ## Antes de un PR o un Release: probar en el celular
 

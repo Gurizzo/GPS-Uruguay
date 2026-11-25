@@ -22,6 +22,7 @@ Leer primero: `README.md`, `docs/ARQUITECTURA.md` (clases, formatos binarios) y 
 - Pruebas: `./gradlew testDebugUnitTest` (rutas sobre `graph.bin` real; la salida queda en `app/build/test-results`).
 - Instalar: `adb install -r app/build/outputs/apk/debug/app-debug.apk` (Xiaomi: activar "Instalar vía USB").
 - Abrir un menú por adb (solo debug): `adb shell am start -n com.radiohonda.radaruy/.MainActivity --es abrir negocios|cerca|buscar`.
+- Demo pública: `bash tools/grabar_demo.sh` (modo demo, sin GPS real). Revisar SIEMPRE los cuadros antes de publicar: el repo es público y no puede aparecer la ubicación, la pantalla de inicio ni las búsquedas del usuario.
 - Datos: scripts en `tools/` (ver README → Datos). Las descargas crudas van a `data-build/` (ignorado).
 
 ## Convenciones

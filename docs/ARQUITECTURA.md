@@ -38,7 +38,8 @@ librerías nativas `arm64-v8a` y `armeabi-v7a` (sin x86) para achicar el APK.
 | `HudView` | Vista dibujada a mano sobre el mapa: velocímetro, cartel de límite, aviso de radar y (en el teléfono) el cartel de indicaciones y la hora de llegada. Respeta el área visible de Android Auto. |
 | `Icons` | Todos los íconos se dibujan con `Canvas` (sin imágenes): negocios en baldosas, radares, flecha, destino, flechas de maniobra, íconos de botones. |
 | `Ui` | Componentes de interfaz del teléfono con el estilo del mapa: hojas inferiores (`Sheet`), filas con botón **Ir**, interruptores, botones redondos, chips. |
-| `MainActivity` | Pantalla del teléfono. Para pruebas por adb (solo debug): `am start -n com.radiohonda.radaruy/.MainActivity --es abrir negocios|cerca|buscar`. |
+| `MainActivity` | Pantalla del teléfono. Para pruebas por adb (solo debug): `am start -n com.radiohonda.radaruy/.MainActivity --es abrir negocios|cerca|buscar|casa|nada`, `--es vista 2d|3d`, `--ez demo true`. Es `singleTop`: los extras llegan también con la app abierta. |
+| `DemoDriver` | Modo demo (solo debug, `--ez demo true` por adb): simula un auto que va de 18 de Julio al Palacio Legislativo; `Drive` ignora el GPS real mientras está activo. Se usa para grabar la demo pública sin mostrar ubicaciones reales. |
 | `Prefs` | Preferencias compartidas: categorías visibles, sonido, vista 3D, destinos recientes. |
 | `PoiCategory` | Las 17 categorías de negocios (clave, nombre, color) y el orden del menú "Cerca mío". |
 | `NearbyIndex` | Lugares por categoría ordenados por distancia (para "Cerca mío"). |

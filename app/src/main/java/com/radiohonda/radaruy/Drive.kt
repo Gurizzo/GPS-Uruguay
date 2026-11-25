@@ -124,7 +124,22 @@ object Drive {
 
     private val listener = LocationListener { onLocation(it) }
 
+    const val DEMO_PROVIDER = "demo"
+
+    /** Modo demo: se ignora el GPS real y solo se usan posiciones simuladas (ver DemoDriver). */
+    @Volatile var demo = false; private set
+
+    fun startDemo() {
+        demo = true
+        trail.clear()
+        lastLimit = null
+        state = State()
+    }
+
+    fun injectDemo(loc: Location) = main.post { onLocation(loc) }
+
     private fun onLocation(loc: Location) {
+        if (demo && loc.provider != DEMO_PROVIDER) return
         // Si hay GPS, ignorar las posiciones de red (menos precisas)
         if (loc.provider == LocationManager.NETWORK_PROVIDER && state.hasFix &&
             System.currentTimeMillis() - lastGps < 10_000) return

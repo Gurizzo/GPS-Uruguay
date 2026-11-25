@@ -168,14 +168,36 @@ class MainActivity : Activity() {
 
         requestNeededPermissions()
 
-        // Solo para pruebas desde la PC (adb): abrir un menú directamente
-        if (applicationInfo.flags and android.content.pm.ApplicationInfo.FLAG_DEBUGGABLE != 0) {
-            when (intent?.getStringExtra("abrir")) {
-                "negocios" -> root.post { showCategories() }
-                "cerca" -> root.post { showNearbyMenu() }
-                "buscar" -> root.post { showSearch() }
-                "casa" -> root.post { showFavoriteSetup(Prefs.Favorite.HOME) }
-            }
+        handleDebugIntent(intent)
+    }
+
+    override fun onNewIntent(intent: android.content.Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        handleDebugIntent(intent)
+    }
+
+    /**
+     * Solo en la versión debug, para pruebas y para grabar la demo desde la PC (adb):
+     *   --ez demo true          recorrido simulado (ignora el GPS real)
+     *   --es vista 2d|3d        cambia la vista del mapa
+     *   --es abrir negocios|cerca|buscar|casa|nada   abre un menú (o cierra los abiertos)
+     */
+    private fun handleDebugIntent(intent: android.content.Intent?) {
+        if (applicationInfo.flags and android.content.pm.ApplicationInfo.FLAG_DEBUGGABLE == 0 || intent == null) return
+        if (intent.getBooleanExtra("demo", false)) DemoDriver.start(this)
+        when (intent.getStringExtra("vista")) {
+            "3d" -> if (!Prefs.view3d(this)) toggleView()
+            "2d" -> if (Prefs.view3d(this)) toggleView()
+        }
+        val menu = intent.getStringExtra("abrir") ?: return
+        Ui.closeAllSheets()
+        val root = window.decorView
+        when (menu) {
+            "negocios" -> root.post { showCategories() }
+            "cerca" -> root.post { showNearbyMenu() }
+            "buscar" -> root.post { showSearch() }
+            "casa" -> root.post { showFavoriteSetup(Prefs.Favorite.HOME) }
         }
     }
 
